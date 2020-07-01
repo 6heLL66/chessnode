@@ -3,8 +3,6 @@ const app 		  = express()
 const PORT = process.env.PORT || 3000;
 var server  	  = require('http').createServer(app)
 var io			    = require('socket.io').listen(server)
-var state       = require('./module.js')
-console.log(state.getNum(2))
 
 
 app.get('/', (request, response) => {
