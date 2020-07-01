@@ -1,8 +1,13 @@
 const express 	= require('express')
 const app 		  = express()
-const PORT = process.env.PORT || 3000;
+const PORT      = process.env.PORT || 3000;
 var server  	  = require('http').createServer(app)
 var io			    = require('socket.io').listen(server)
+var createState = require('./public/js/createState.js')
+var state       = []
+createState.fillState(state);
+console.log(state);
+
 
 
 app.get('/', (request, response) => {
@@ -27,10 +32,12 @@ server.listen(PORT, (err) => {
 
 io.on('connection',(socket) => {
 		console.log("connected")
+    socket.json.send(JSON.stringify({do : "state" , data : state}))
 		socket.on('disconnect', function(){
       		console.log('disconnected')
   	})
     socket.on('message' , function(msg){
+      if(msg.do == "step")state = msg.state;
       socket.broadcast.json.send(JSON.stringify(msg))
     })
 })

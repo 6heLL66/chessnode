@@ -21,8 +21,8 @@ function posToCords(pos){
 
 function sendMessage(index,pos,kill){
 
-	if(kill)socket.send({index : index, pos : pos , do : "step" , type : "kill"});
-	else socket.send({index : index, pos : pos , do : "step" , type : "step"})
+	if(kill)socket.send({index : index, pos : pos , do : "step" , type : "kill", state : state});
+	else socket.send({index : index, pos : pos , do : "step" , type : "step" , state : state})
 }
 
 function draw(){
@@ -92,7 +92,6 @@ canvas.onclick = function(e){
 	}
 	
 }
-fillState();
 function stepK(x1,y1){
 	change(current,{x : x1, y : y1},{x : x1, y : y1});
 	if(checkShah(current.team)){

@@ -196,140 +196,7 @@ var rules = {
 
 }
 var state = [];
-function fillState(){
-	state = [];
-	for(let i = 0;i < 32;i++){
-		if(i < 16){
-			if(i < 8){
-				let obj = {
-					name : "pawn",
-					pos : {x : i + 1, y : 2},
-					team : "white",
-					img : "wP.png",
-					steps : 0,
-					func : rules.wP
-				}
-				state.push(obj);
-			}
-			if(i == 8 || i == 9){
-				let obj = {
-					name : "rook",
-					pos : {x : i == 8 ? 1 : 8, y : 1},
-					team : "white",
-					img : "wR.png",
-					func : rules.rook
-				}
-				state.push(obj);
-			}
-			if(i == 10 || i == 11){
-				let obj = {
-					name : "knight",
-					pos : {x : i == 10 ? 2 : 7, y : 1},
-					team : "white",
-					img : "wN.png",
-					func : rules.knight
-				}
-				state.push(obj);
-			}
-			if(i == 12 || i == 13){
-				let obj = {
-					name : "bishop",
-					pos : {x : i == 12 ? 3 : 6, y : 1},
-					team : "white",
-					img : "wB.png",
-					func : rules.bishop
-				}
-				state.push(obj);
-			}
-			if(i == 14){
-				let obj = {
-					name : "king",
-					pos : {x : 4, y : 1},
-					team : "white",
-					steps : 0,
-					img : "wK.png",
-					func : rules.king
-				}
-				state.push(obj);
-			}
-			if(i == 15){
-				let obj = {
-					name : "queen",
-					pos : {x : 5, y : 1},
-					team : "white",
-					img : "wQ.png",
-					func : rules.queen
-				}
-				state.push(obj);
-			}
-		}
-		else {
-			if(i < 24){
-				let obj = {
-					name : "pawn",
-					pos : {x : i - 15, y : 7},
-					team : "black",
-					img : "bP.png",
-					steps : 0,
-					func : rules.bP
-				}
-				state.push(obj);
-			}
-			if(i == 24 || i == 25){
-				let obj = {
-					name : "rook",
-					pos : {x : i == 24 ? 1 : 8, y : 8},
-					team : "black",
-					img : "bR.png",
-					func : rules.rook
-				}
-				state.push(obj);
-			}
-			if(i == 26 || i == 27){
-				let obj = {
-					name : "knight",
-					pos : {x : i == 26 ? 2 : 7, y : 8},
-					team : "black",
-					img : "bN.png",
-					func : rules.knight
-				}
-				state.push(obj);
-			}
-			if(i == 27 || i == 28){
-				let obj = {
-					name : "bishop",
-					pos : {x : i == 27 ? 3 : 6, y : 8},
-					team : "black",
-					img : "bB.png",
-					func : rules.bishop
-				}
-				state.push(obj);
-			}
-			if(i == 29){
-				let obj = {
-					name : "king",
-					pos : {x : 4, y : 8},
-					team : "black",
-					steps : 0,
-					img : "bK.png",
-					func : rules.king
-				}
-				state.push(obj);
-			}
-			if(i == 30){
-				let obj = {
-					name : "queen",
-					pos : {x : 5, y : 8},
-					team : "black",
-					img : "bQ.png",
-					func : rules.queen
-				}
-				state.push(obj);
-			}
-		}
-	}
-	draw();
-}
+
 function load(){
 	var img = document.createElement('img');
 	img.setAttribute('src', 'public/images/wR.png');
@@ -479,11 +346,24 @@ function change(fig,pos,kill){
 	}
 }
 socket.on('message' , function(msg){
-	console.log("пришло",msg);
 	let message = JSON.parse(msg);
+	console.log("пришло",message);
 	if(message.do == "step"){
 		if(message.type == "step")change(state[message.index],message.pos);
 		else if(message.type == "kill")change(state[message.index],message.pos,message.pos);
+	}
+	else if(message.do == "state"){
+		let newState = message.data;
+		for(let i = 0;i < newState.length;i++){
+			if(newState[i].name == "pawn" && newState[i].team == "black")newState[i].func = rules.bP;
+			else if(newState[i].name == "pawn" && newState[i].team == "white")newState[i].func = rules.wP;
+			else if(newState[i].name == "rook" )newState[i].func = rules.rook;
+			else if(newState[i].name == "knight" )newState[i].func = rules.knight;
+			else if(newState[i].name == "bishop" )newState[i].func = rules.bishop;
+			else if(newState[i].name == "king" )newState[i].func = rules.king;
+			else if(newState[i].name == "queen" )newState[i].func = rules.queen;
+		}
+		state = newState;
 	}
 	draw();
 })
