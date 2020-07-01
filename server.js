@@ -1,6 +1,6 @@
 const express 	= require('express')
 const app 		  = express()
-const port 		  = 8000
+const PORT = process.env.PORT || 3000;
 var server  	  = require('http').createServer(app)
 var io			    = require('socket.io').listen(server)
 var state       = require('./module.js')
@@ -19,11 +19,11 @@ app.use('/public',express.static('public'))
 
 
 
-server.listen(port, (err) => {
+server.listen(PORT, (err) => {
     if (err) {
         return console.log('something bad happened', err)
     }
-    console.log(`server is listening on ${port}`)
+    console.log(`server is listening on ${PORT}`)
 })
 
 
