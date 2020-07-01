@@ -21,8 +21,8 @@ function posToCords(pos){
 
 function sendMessage(index,pos,kill){
 
-	if(kill)socket.send({index : index, pos : pos , do : "step" , type : "kill", state : state});
-	else socket.send({index : index, pos : pos , do : "step" , type : "step" , state : state})
+	if(kill)socket.send({do : "step" , state : state});
+	else socket.send({ do : "step" , state : state})
 }
 
 function draw(){

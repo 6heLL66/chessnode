@@ -349,8 +349,7 @@ socket.on('message' , function(msg){
 	let message = JSON.parse(msg);
 	console.log("пришло",message);
 	if(message.do == "step"){
-		if(message.type == "step")change(state[message.index],message.pos);
-		else if(message.type == "kill")change(state[message.index],message.pos,message.pos);
+		state = message.state;
 	}
 	else if(message.do == "state"){
 		let newState = message.data;
