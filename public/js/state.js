@@ -345,14 +345,20 @@ function change(fig,pos,kill){
 		fig.pos.y = pos.y;
 	}
 }
+function mirroring (state){
+	for(let i = 0;i < state.length;i++){
+		state[i].pos.x = 9 - state[i].pos.x;
+		state[i].pos.y = 9 - state[i].pos.y;
+	}
+	draw();
+}
 socket.on('message' , function(msg){
 	let message = JSON.parse(msg);
 	console.log("пришло",message);
-	if(message.do == "step"){
-		state = message.state;
-	}
-	else if(message.do == "state"){
-		let newState = message.data;
+	let newState;
+	if(message.do == "state" || message.do == "step"){
+		if(message.do == "state")newState = message.data;
+		else if (message.do == "step")newState = message.state;
 		for(let i = 0;i < newState.length;i++){
 			if(newState[i].name == "pawn" && newState[i].team == "black")newState[i].func = rules.bP;
 			else if(newState[i].name == "pawn" && newState[i].team == "white")newState[i].func = rules.wP;

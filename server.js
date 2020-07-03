@@ -1,10 +1,12 @@
-const express 	= require('express')
-const app 		  = express()
-const PORT      = process.env.PORT || 3000;
-var server  	  = require('http').createServer(app)
-var io			    = require('socket.io').listen(server)
-var createState = require('./public/js/createState.js')
-var state       = []
+const express 	   = require('express')
+const app 		     = express()
+const PORT         = process.env.PORT || 3000;
+var server  	     = require('http').createServer(app)
+var io			       = require('socket.io').listen(server)
+const bodyParser   = require('body-parser');
+var createState    = require('./public/js/createState.js')
+var state          = []
+
 createState.fillState(state);
 console.log(state);
 
@@ -19,6 +21,13 @@ app.get('/game', (request, response) => {
 })
 
 app.use('/public',express.static('public'))
+app.use(bodyParser.urlencoded({extended: true}))
+app.use(bodyParser.json())
+
+app.post('/createGame', (req,res) => {
+  console.log(req.body)
+  res.send(JSON.stringify("сообщение дошло до сервера"))
+})
 
 
 
@@ -41,3 +50,4 @@ io.on('connection',(socket) => {
       socket.broadcast.json.send(JSON.stringify(msg))
     })
 })
+
