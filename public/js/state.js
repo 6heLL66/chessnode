@@ -273,7 +273,7 @@ function draw(){
 function stepK(x1,y1){
 	change(current,{x : x1, y : y1},{x : x1, y : y1});
 	if(checkShah(current.team)){
-		state.push(buffer[1]);
+		state = add(state,buffer[1].index,buffer[1].figure)
 		change(current,buffer[0]);
 		buffer = [];
 		current = -1;
@@ -328,6 +328,19 @@ function findFName(name){
 	}
 	return arr;
 }
+function add(state,ind,fig){
+	let arr = [];
+	let c = 0;
+	for(let i = 0;i <= state.length;i++){
+		if(i == ind){
+			arr.push(fig)
+			c--;
+		}
+		else arr.push(state[c])
+		c++;
+	}
+	return arr;
+}
 function choose(obj,y){
 	let modal = document.createElement('div');
 	let style = `
@@ -357,6 +370,7 @@ function choose(obj,y){
 	    		obj.func = rules.queen;
 				modal.remove();
 				load();
+				sendState();
 				draw();
     		}
     		knight.onclick = function (){
@@ -365,6 +379,7 @@ function choose(obj,y){
 	    		obj.func = rules.knight;
 				modal.remove();
 				load();
+				sendState();
 				draw();
     		}
     	queen.append(queenImg);
@@ -419,7 +434,7 @@ function change(fig,pos,kill){
 	buffer = [];
 	if(kill){
 		buffer.push({x : fig.pos.x,y:fig.pos.y})
-		buffer.push(findF(kill.x,kill.y).figure);
+		buffer.push(findF(kill.x,kill.y));
 		state.splice(findF(kill.x,kill.y).index,1);
 		fig.pos.x = pos.x;
 		fig.pos.y = pos.y;
@@ -562,7 +577,6 @@ function checkShah(team){
 	return false;
 }
 function checkMat(team){
-	console.log("check");
 	let num = state.length;
 	for(let i = 0;i < num;i++){
 		if(state[i].team != team)continue;
@@ -579,18 +593,16 @@ function checkMat(team){
 				}
 			}
 		}
-		console.log(fig);
-		console.log(arr);
 		for(let k = 0;k < arr.length;k++){
 			if(findF(arr[k].x,arr[k].y)){
 				change(fig,{x : arr[k].x, y : arr[k].y},{x : arr[k].x, y : arr[k].y});
 				if(checkShah(fig.team)){
-					state.push(buffer[1]);
+					state = add(state,buffer[1].index,buffer[1].figure)
 					change(fig,buffer[0]);
 					buffer = [];					
 				}
 				else {
-					state.push(buffer[1]);
+					state = add(state,buffer[1].index,buffer[1].figure)
 					change(fig,buffer[0]);
 					buffer = [];
 					current = -1;
