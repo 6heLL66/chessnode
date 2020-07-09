@@ -5,13 +5,20 @@
 	<title>CHESS</title>
 	<link rel="stylesheet" href = "public/css/style.css">
 	<link rel="stylesheet" href="public/fontawesome/css/all.css">
+	<script src = "socket.io/socket.io.js"></script>
+	<script src = "public/js/socket.js"></script>
 </head>
 <body>
 	<div class = "main">
 		<div class="btn_bar">
 			<div class="btn" id="btn">CREATE +</div>
 		</div>
-		<div class = "games_bar"></div>
+		<div class = "games_bar" id="games">
+			<div class = "game" style = "font-size : 20px;font-weight: 600;cursor:default">
+				<div class = "game_name">Name of the game</div>
+				<div class = "game_players">Players</div>
+			</div>
+		</div>
 	</div>
 
 	<div class="modal" id="modal">
@@ -31,7 +38,7 @@
 		</div>
 	</div>
 	
-	<script src = "public/js/index.js"></script>
+	<script src = "public/js/index.js" type="module"></script>
 	
 </body>
 </html>

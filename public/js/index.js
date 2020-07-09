@@ -7,37 +7,83 @@ document.getElementById("btn").onclick = function () {
 
 document.getElementById("white").onclick = function(e){
 	if(e.target.choosed == "yes")return 0;
-	e.target.choosed = "yes";
+	e.target.setAttribute("choosed" , "yes");
 	e.target.style.backgroundColor = "green";
-	document.getElementById("black").choosed = "no";
+	document.getElementById("black").setAttribute("choosed" , "no");
 	document.getElementById("black").style.backgroundColor = "white";
 }
 document.getElementById("black").onclick = function(e){
 	if(e.target.choosed == "yes")return 0;
-	e.target.choosed = "yes";
+	e.target.setAttribute("choosed" , "yes");
 	e.target.style.backgroundColor = "green";
-	document.getElementById("white").choosed = "no";
+	document.getElementById("white").setAttribute("choosed" , "no");
 	document.getElementById("white").style.backgroundColor = "white";
 }
 document.getElementById("send").onclick = function (){
 	let team;
-	if(document.getElementById("white").choosed == "yes")team = "white";
+	if(document.getElementById("white").getAttribute("choosed") == "yes")team = "white";
 	else team = "black";
 	let name = document.getElementById("name").value;
 	if(name.length == 0 || name.length > 16){
 		console.log("smth wrong with name");
 		return 0;
 	}
-	let data = {name : name,team : team, key : createKey(15)};
-	fetch('/createGame', {
-    	method: 'POST',
-    	body: {'asd' : 2}
-	})
-  	.then(response => response.json())
-  	.then(json => console.log(json))
-		
-	
+	let data = {
+		name : name,
+		team : team,
+		players : {white : "",black : ""},
+		spectators : [],
+		key : createKey(15),
+		state : [],
+		turn : "white"
+	};
+	if(data.team == "white")data.players.white = "first"
+    else data.players.black = "first";
+	createGame(data);
 }
+//socket
+socket.on("message", function (message){
+	let msg = JSON.parse(message);
+	if(msg.do == "sendGames"){
+		let games = msg.data;
+		for(let i = 0;i < games.length;i++){
+			addGame(games[i]);
+		}
+	}
+	if(msg.do == "mes"){
+		console.log(msg.data);
+	}
+})
+function getGames (){
+	socket.emit("getGames")
+}
+getGames();
+function createGame(data){
+	socket.emit("makeGame",data);
+	window.location.href = '/game?key=' + data.key;
+}
+function addGame(game){
+	let div = document.createElement("div");
+	div.setAttribute("data",JSON.stringify(game));
+	div.setAttribute("class","game");
+
+	let name = document.createElement("div");
+	name.setAttribute("class","game_name");
+	name.innerText = game.name;
+
+	let players = document.createElement("div");
+	players.setAttribute("class","game_players");
+	players.innerText = (game.players.white == "" || game.players.black == "" ? "1" : "2") + "/2";
+
+	div.onclick = function (e){
+		window.location.href = '/game?key=' + JSON.parse(e.target.parentNode.getAttribute("data")).key;
+	};
+
+	div.append(name);
+	div.append(players);
+	document.getElementById('games').append(div);
+}
+
 function createKey(n){
 	let res = "";
 	let obj = {

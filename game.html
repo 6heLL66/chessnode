@@ -4,13 +4,23 @@
 	<meta charset="UTF-8">
 	<title>CHESS</title>
 	<link rel="stylesheet" href="public/fontawesome/css/all.css">
+	<link rel="stylesheet" href="public/css/style.css">
 	<script src = "socket.io/socket.io.js"></script>
-	<script src = "public/js/socket.js"></script>	
+	<script type = "text/javascript">
+		(function(){
+			socket = io.connect();
+			socket.on("connect" , function(){
+				console.log("Подключение установлено",socket);
+			})
+			socket.emit("connectToRoom");
+		})();
+	</script>	
 </head>
 <body style="margin : 0;padding:0">
 	<canvas id = "canvas" style="border : 1px solid black"></canvas>
 	
-
+	<div class ="abadon" id = "abadon">Quit and Give Up</div>
+	<div id = "log" class ="log"></div>
 	<script src = "public/js/state.js"></script>
 	<script src = "public/js/game.js"></script>
 

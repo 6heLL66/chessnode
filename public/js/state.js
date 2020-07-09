@@ -242,7 +242,86 @@ function load(){
 		}
 	}
 }
-load();
+
+function posToCords(pos){
+	pos++;
+	let y = Math.floor(pos / 8 - 0.01) + 1;
+	let x = pos - ((y-1)*8);
+	return {
+		x : x,
+		y : y
+	}
+}
+function draw(){
+	for(let i = 0;i < 64;i++){
+		let x = posToCords(i).x;
+		let y = posToCords(i).y;
+		if((y % 2 == 0 && x % 2 == 0) || (y % 2 != 0 && x % 2 != 0))ctx.fillStyle = "#ffff95";
+		else ctx.fillStyle = "#227022";
+		ctx.fillRect((x-1)*size,(y-1)*size,size,size);
+	}
+	for(let i = 0;i < state.length;i++){
+		let images = document.getElementsByTagName('img');
+		for(let k = 0;k<images.length;k++){
+			if(images[k].src.substr(images[k].src.length - 6,6) == state[i].img){
+				ctx.drawImage(images[k],(state[i].pos.x-1)*size,(state[i].pos.y-1)*size,size,size);
+				break;
+			}
+		}
+	}	
+}
+function stepK(x1,y1){
+	change(current,{x : x1, y : y1},{x : x1, y : y1});
+	if(checkShah(current.team)){
+		state.push(buffer[1]);
+		change(current,buffer[0]);
+		buffer = [];
+		current = -1;
+	}
+	else {
+		buffer = [];
+		if(current.name == "pawn" && (y1 == 8 || y1 == 1))choose(current,y1);
+		if(current.name == "pawn" || current.name == "king")current.steps++;
+		current.pos.x = x1;
+		current.pos.y = y1;	
+		draw();
+		if(current.team == "black")checkMat("white");
+		else checkMat("black");
+		current = -1;
+	}		
+}
+function step(x1,y1){
+	change(current,{x : x1, y : y1});
+	if(checkShah(current.team)){
+		change(current,buffer.pop());
+		current = -1;
+	}
+	else {
+		change(current,buffer.pop());
+		if(current.name == "pawn" && (y1 == 8 || y1 == 1))choose(current,y1);
+		if(current.name == "pawn" || current.name == "king")current.steps++;
+		current.pos.x = x1;
+		current.pos.y = y1;
+		draw();
+		if(current.team == "black")checkMat("white");
+		else checkMat("black");
+		current = -1;
+	}
+}
+function findF(x,y){
+	if(x < 1 || x > 8 || y > 8 || y < 1)return false;
+	for(let i = 0;i < state.length;i++){
+		if(state[i].pos.x == x && state[i].pos.y == y)return {figure:state[i],index:i};
+	}
+	return false;
+}
+function findFName(name){
+	let arr = [];
+	for(let i = 0;i < state.length;i++){
+		if(state[i].name == name)arr.push(state[i]);
+	}
+	return arr;
+}
 function choose(obj,y){
 	let modal = document.createElement('div');
 	let style = `
@@ -352,13 +431,18 @@ function mirroring (state){
 	}
 	draw();
 }
-socket.on('message' , function(msg){
-	let message = JSON.parse(msg);
-	console.log("пришло",message);
-	let newState;
-	if(message.do == "state" || message.do == "step"){
-		if(message.do == "state")newState = message.data;
-		else if (message.do == "step")newState = message.state;
+document.getElementById("abadon").onclick = function(){
+	if(team == "spectator")return 0;
+	socket.emit("disconnectFromGame" , window.location.href.split("=")[1])
+	fetch("/clearCookie").then((res) => window.location.href = "/")
+}
+//socket
+socket.on('message' , function(message){
+	let msg = JSON.parse(message);
+	console.log("пришло",msg);
+	if(message.do == "sendState"){
+		let newState = message.data;
+		console.log(newState);
 		for(let i = 0;i < newState.length;i++){
 			if(newState[i].name == "pawn" && newState[i].team == "black")newState[i].func = rules.bP;
 			else if(newState[i].name == "pawn" && newState[i].team == "white")newState[i].func = rules.wP;
@@ -369,9 +453,50 @@ socket.on('message' , function(msg){
 			else if(newState[i].name == "queen" )newState[i].func = rules.queen;
 		}
 		state = newState;
+		draw();
 	}
+})
+socket.on("clearCookie" , () => {
+	fetch("/clearCookie")
+})
+socket.on("sendState" , (newState) => {
+	console.log(newState);
+	for(let i = 0;i < newState.length;i++){
+		if(newState[i].name == "pawn" && newState[i].team == "black")newState[i].func = rules.bP;
+		else if(newState[i].name == "pawn" && newState[i].team == "white")newState[i].func = rules.wP;
+		else if(newState[i].name == "rook" )newState[i].func = rules.rook;
+		else if(newState[i].name == "knight" )newState[i].func = rules.knight;
+		else if(newState[i].name == "bishop" )newState[i].func = rules.bishop;
+		else if(newState[i].name == "king" )newState[i].func = rules.king;
+		else if(newState[i].name == "queen" )newState[i].func = rules.queen;
+	}
+	state = newState;
 	draw();
 })
+socket.on("setTeam" , (t) => {
+	team = t;
+	let span = document.createElement('span');
+	span.innerText = "you connected like player " + t;
+	document.getElementById("log").append(span);
+})
+socket.on("startGame" , () => {
+	startGame = true;
+	let span = document.createElement('span');
+	span.innerText = "game started!" ;
+	document.getElementById("log").append(span);
+})
+socket.on("changeTurn" , () => {
+	console.log("смена хода")
+	turn == "white" ? turn = "black" : turn = "white"; 
+})
+socket.on("sendToLog" , (msg) => {
+	let span = document.createElement('span');
+	span.innerText = msg;
+	document.getElementById("log").append(span);
+})
+function sendState(){
+	socket.emit("sendState" , state , window.location.href.split("=")[1]);
+}
 function checkShah(team){
 	let kings = findFName("king");
 	let knightSteps = [[1,2],[2,1],[-1,2],[2,-1],[1,-2],[-2,1],[-1,-2],[-2,-1]];
@@ -509,5 +634,6 @@ function checkMat(team){
 	modal.append(cross);
 	document.body.append(modal);
 }
+
 
  
