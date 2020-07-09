@@ -279,6 +279,7 @@ function stepK(x1,y1){
 		current = -1;
 	}
 	else {
+		console.log("stepK")
 		buffer = [];
 		if(current.name == "pawn" && (y1 == 8 || y1 == 1))choose(current,y1);
 		if(current.name == "pawn" || current.name == "king")current.steps++;
@@ -288,6 +289,8 @@ function stepK(x1,y1){
 		if(current.team == "black")checkMat("white");
 		else checkMat("black");
 		current = -1;
+		sendState();
+		socket.emit("setTurn" , window.location.href.split("=")[1])
 	}		
 }
 function step(x1,y1){
@@ -306,6 +309,9 @@ function step(x1,y1){
 		if(current.team == "black")checkMat("white");
 		else checkMat("black");
 		current = -1;
+		sendState();
+		console.log("step")
+		socket.emit("setTurn" , window.location.href.split("=")[1])
 	}
 }
 function findF(x,y){

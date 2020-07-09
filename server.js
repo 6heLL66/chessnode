@@ -118,6 +118,7 @@ io.on('connection',(socket) => {
     findGame(key).game.state = state
   })
   socket.on("setTurn" , (key) => {
+    console.log("setTurn")
     let game = findGame(key).game
     if(game.turn == "white")game.turn = "black"
     else game.turn = "white"

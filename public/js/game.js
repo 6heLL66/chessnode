@@ -30,22 +30,16 @@ canvas.onclick = function(e){
 		}
 		else if(current.func(x1,y1)){
 			stepK(x1,y1);
-			sendState();
-			socket.emit("setTurn" , window.location.href.split("=")[1])
 		}
 	}
 	else if (current != -1 && !findF(x1,y1)){
 		if(current.name == "king"){
 			if(current.func(x1,y1,checkShah(current.team))){
-				step(x1,y1);
-				sendState();
-				socket.emit("setTurn" , window.location.href.split("=")[1])
+				step(x1,y1);	
 			}	
 		}
 		else if(current.func(x1,y1)){
 			step(x1,y1);
-			sendState();
-			socket.emit("setTurn" , window.location.href.split("=")[1])
 		}
 		else current = -1;
 	}
