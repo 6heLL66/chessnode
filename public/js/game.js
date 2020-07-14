@@ -4,6 +4,7 @@ canvas.width = window.innerWidth * 0.4;
 canvas.height = canvas.width;
 canvas.style.marginTop ="100px";
 canvas.style.marginRight = window.innerWidth * 0.2 + "px";
+document.getElementById('state').style.right = window.innerWidth/1.8 + "px";
 var size = canvas.width / 8;
 var current = -1;
 var team = "";

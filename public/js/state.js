@@ -445,8 +445,10 @@ function change(fig,pos,kill){
 		fig.pos.y = pos.y;
 	}
 }
-function mirroring (state){
+function mirroring (state,bull){
 	for(let i = 0;i < state.length;i++){
+		if(state[i].name == "pawn" && state[i].team == "white" && bull)state[i].func = rules.bP
+		else if(state[i].name == "pawn" && state[i].team == "black" && bull)state[i].func = rules.wP
 		state[i].pos.x = 9 - state[i].pos.x;
 		state[i].pos.y = 9 - state[i].pos.y;
 	}
@@ -458,30 +460,12 @@ document.getElementById("abadon").onclick = function(){
 	fetch("/clearCookie").then((res) => window.location.href = "/")
 }
 //socket
-socket.on('message' , function(message){
-	let msg = JSON.parse(message);
-	console.log("пришло",msg);
-	if(message.do == "sendState"){
-		let newState = message.data;
-		console.log(newState);
-		for(let i = 0;i < newState.length;i++){
-			if(newState[i].name == "pawn" && newState[i].team == "black")newState[i].func = rules.bP;
-			else if(newState[i].name == "pawn" && newState[i].team == "white")newState[i].func = rules.wP;
-			else if(newState[i].name == "rook" )newState[i].func = rules.rook;
-			else if(newState[i].name == "knight" )newState[i].func = rules.knight;
-			else if(newState[i].name == "bishop" )newState[i].func = rules.bishop;
-			else if(newState[i].name == "king" )newState[i].func = rules.king;
-			else if(newState[i].name == "queen" )newState[i].func = rules.queen;
-		}
-		state = newState;
-		draw();
-	}
-})
 socket.on("clearCookie" , () => {
 	fetch("/clearCookie")
 })
+let c = 0;
 socket.on("sendState" , (newState) => {
-	console.log(newState);
+	c++;
 	for(let i = 0;i < newState.length;i++){
 		if(newState[i].name == "pawn" && newState[i].team == "black")newState[i].func = rules.bP;
 		else if(newState[i].name == "pawn" && newState[i].team == "white")newState[i].func = rules.wP;
@@ -492,10 +476,17 @@ socket.on("sendState" , (newState) => {
 		else if(newState[i].name == "queen" )newState[i].func = rules.queen;
 	}
 	state = newState;
+	if(team == "white")mirroring(state , true);
+	else if(team == "black" && c > 1) mirroring(state , false)
+	if(c > 1)document.getElementById("sound").play()
 	draw();
 })
 socket.on("setTeam" , (t) => {
 	team = t;
+	if(t == "black"){
+		//mirroring(state , false);
+		//console.log(t)
+	}
 	let span = document.createElement('span');
 	span.innerText = "you connected like player " + t;
 	document.getElementById("log").append(span);
@@ -505,10 +496,15 @@ socket.on("startGame" , () => {
 	let span = document.createElement('span');
 	span.innerText = "game started!" ;
 	document.getElementById("log").append(span);
+	document.getElementById('state').innerText = "TURN " + turn.toUpperCase() 
+})
+socket.on("win" , (team) => {
+	win(team)
 })
 socket.on("changeTurn" , () => {
 	console.log("смена хода")
-	turn == "white" ? turn = "black" : turn = "white"; 
+	turn == "white" ? turn = "black" : turn = "white";
+	document.getElementById('state').innerText = "TURN " + turn.toUpperCase()  
 })
 socket.on("sendToLog" , (msg) => {
 	let span = document.createElement('span');
@@ -516,6 +512,7 @@ socket.on("sendToLog" , (msg) => {
 	document.getElementById("log").append(span);
 })
 function sendState(){
+	document.getElementById("sound").play()
 	socket.emit("sendState" , state , window.location.href.split("=")[1]);
 }
 function checkShah(team){
@@ -622,6 +619,11 @@ function checkMat(team){
 			}
 		}
 	}
+	win(team);
+	socket.emit("victory" , team , window.location.href.split("=")[1] )
+	socket.emit("disconnectFromGame" , window.location.href.split("=")[1])
+}
+function win(team){
 	let text = ""
 	if(team == "black")text = "white" + " WINS";
 	else text = "black" + " WINS";
@@ -652,6 +654,5 @@ function checkMat(team){
 	modal.append(cross);
 	document.body.append(modal);
 }
-
 
  

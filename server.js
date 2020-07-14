@@ -80,24 +80,24 @@ io.on('connection',(socket) => {
     }
     else if(clientId == lastGame.players.white){
         socket.emit("setTeam" , "white")
-        socket.emit("startGame")
+        if(lastGame.players.black != "")socket.emit("startGame")
         if(lastGame.turn == "black")socket.emit("changeTurn")
     }
     else if (clientId == lastGame.players.black){
         socket.emit("setTeam" , "black")
-        socket.emit("startGame")
+        if(lastGame.players.white != "")socket.emit("startGame")
         if(lastGame.turn == "black")socket.emit("changeTurn")
     }
     else if(lastGame.players.white != "" && lastGame.players.black != ""){
       socket.emit("setTeam" , "spectator")
     }       
-    else if(lastGame.players.white != ""){
+    else if(lastGame.players.white != "" && lastGame.players.black != clientId){
       socket.emit("setTeam" , "black")
       lastGame.players.black = clientId
       socket.to(lastGame.key).emit("startGame")
       socket.emit("startGame")
     }
-    else {
+    else if(lastGame.players.white == "" && lastGame.players.white != clientId){
       socket.emit("setTeam" , "white")
       lastGame.players.white = clientId
       socket.to(lastGame.key).emit("startGame")
@@ -116,6 +116,10 @@ io.on('connection',(socket) => {
   socket.on("sendState" , (state,key) => {
     socket.to(key).emit("sendState" , state)
     findGame(key).game.state = state
+  })
+  socket.on("victory" , (team , key) => {
+    socket.to(key).emit("win" , team)
+    socket.emit("clearCookie")
   })
   socket.on("setTurn" , (key) => {
     console.log("setTurn")

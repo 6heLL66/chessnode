@@ -1,4 +1,5 @@
-var rules = {
+function fillState(state){
+	var rules = {
 	"bP" : function(x,y){
 			if(findF(x,y) && ((this.pos.x + 1 == x && this.pos.y - 1 == y) || (this.pos.x - 1 == x && this.pos.y - 1 == y))){
 				return true;
@@ -190,9 +191,8 @@ var rules = {
 					return true;
 				} 
 			return false;
-		}
 	}
-function fillState(state){
+}
 	for(let i = 0;i < 32;i++){
 		if(i < 16){
 			if(i < 8){
@@ -325,7 +325,29 @@ function fillState(state){
 	}
 	return state;
 }
+function findGame(key,games){
+  for(let i = 0;i < games.length;i++){
+    if(games[i].key == key)return {game : games[i] , i : i};
+  }
+  return false;
+}
+function findGameId(id,games){
+  for(let i = 0;i < games.length;i++){
+    if(games[i].players.white == id || games[i].players.black == id)return games[i];
+  }
+  return false;
+}
+function posToCords(pos){
+	pos++;
+	let y = Math.floor(pos / 8 - 0.01) + 1;
+	let x = pos - ((y-1)*8);
+	return {
+		x : x,
+		y : y
+	}
+}
 module.exports = {
 	fillState : fillState,
-	rules : rules
+	findGame : findGame,
+	findGameId : findGameId
 }

@@ -5,7 +5,6 @@ body{
 	flex-direction: row;
 	justify-content: center;
 	background-image : url("../images/bg3.jpg");
-	background-size : cover;
 	background-repeat: no-repeat;
 	font-family : "Arial";
 }
@@ -64,7 +63,8 @@ body{
 	align-content: center;
 	position: absolute;
 	width: 23%;
-	height : 28%;
+	height : 29%;
+	max-height : 250px;
 	font-size : 20px;
 	background: rgb(255,255,255);
 }
@@ -105,7 +105,7 @@ body{
 	font-size : 18px;
 }
 .game_players {
-	width : 15%;
+	width : 18%;
 	border-right : 1px solid black;
 	height : 100%;
 	line-height : 30px;
@@ -137,4 +137,11 @@ body{
 	flex-direction: column;
 	justify-content: flex-start;
 	align-items: center;
+}
+.state{
+	position: fixed;
+	top:26px;
+	font-size: 36px;
+	font-weight: 600;
+	color : #3cce7b;
 }
