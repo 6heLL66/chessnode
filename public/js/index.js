@@ -21,6 +21,7 @@ document.getElementById("black").onclick = function(e){
 }
 document.getElementById("send").onclick = function (){
 	let team;
+	fetch("/clearCookie")
 	if(document.getElementById("white").getAttribute("choosed") == "yes")team = "white";
 	else team = "black";
 	let name = document.getElementById("name").value;
