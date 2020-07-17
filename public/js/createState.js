@@ -198,7 +198,8 @@ function fillState(state){
 			if(i < 8){
 				let obj = {
 					name : "pawn",
-					pos : {x : i + 1, y : 2},
+					pos : { x : i + 1, y : 2 },
+					visPos: { x: 0, y: 0 },
 					team : "white",
 					img : "wP.png",
 					steps : 0,
@@ -210,6 +211,7 @@ function fillState(state){
 				let obj = {
 					name : "rook",
 					pos : {x : i == 8 ? 1 : 8, y : 1},
+					visPos: { x: 0, y: 0 },
 					team : "white",
 					img : "wR.png",
 					func : rules.rook
@@ -220,6 +222,7 @@ function fillState(state){
 				let obj = {
 					name : "knight",
 					pos : {x : i == 10 ? 2 : 7, y : 1},
+					visPos: { x: 0, y: 0 },
 					team : "white",
 					img : "wN.png",
 					func : rules.knight
@@ -230,6 +233,7 @@ function fillState(state){
 				let obj = {
 					name : "bishop",
 					pos : {x : i == 12 ? 3 : 6, y : 1},
+					visPos: { x: 0, y: 0 },
 					team : "white",
 					img : "wB.png",
 					func : rules.bishop
@@ -240,6 +244,7 @@ function fillState(state){
 				let obj = {
 					name : "king",
 					pos : {x : 4, y : 1},
+					visPos: { x: 0, y: 0 },
 					team : "white",
 					steps : 0,
 					img : "wK.png",
@@ -251,6 +256,7 @@ function fillState(state){
 				let obj = {
 					name : "queen",
 					pos : {x : 5, y : 1},
+					visPos: { x: 0, y: 0 },
 					team : "white",
 					img : "wQ.png",
 					func : rules.queen
@@ -263,6 +269,7 @@ function fillState(state){
 				let obj = {
 					name : "pawn",
 					pos : {x : i - 15, y : 7},
+					visPos: { x: 0, y: 0 },
 					team : "black",
 					img : "bP.png",
 					steps : 0,
@@ -274,6 +281,7 @@ function fillState(state){
 				let obj = {
 					name : "rook",
 					pos : {x : i == 24 ? 1 : 8, y : 8},
+					visPos: { x: 0, y: 0 },
 					team : "black",
 					img : "bR.png",
 					func : rules.rook
@@ -284,6 +292,7 @@ function fillState(state){
 				let obj = {
 					name : "knight",
 					pos : {x : i == 26 ? 2 : 7, y : 8},
+					visPos: { x: 0, y: 0 },
 					team : "black",
 					img : "bN.png",
 					func : rules.knight
@@ -294,6 +303,7 @@ function fillState(state){
 				let obj = {
 					name : "bishop",
 					pos : {x : i == 27 ? 3 : 6, y : 8},
+					visPos: { x: 0, y: 0 },
 					team : "black",
 					img : "bB.png",
 					func : rules.bishop
@@ -304,6 +314,7 @@ function fillState(state){
 				let obj = {
 					name : "king",
 					pos : {x : 4, y : 8},
+					visPos: { x: 0, y: 0 },
 					team : "black",
 					steps : 0,
 					img : "bK.png",
@@ -315,6 +326,7 @@ function fillState(state){
 				let obj = {
 					name : "queen",
 					pos : {x : 5, y : 8},
+					visPos: { x: 0, y: 0 },
 					team : "black",
 					img : "bQ.png",
 					func : rules.queen

@@ -66,7 +66,7 @@ io.on('connection',(socket) => {
   socket.on("connectToRoom", () => {
     socket.join(lastGame.key , () => {
       console.log("socket joined room " + lastGame.key + " with id " + socket.request.headers.cookie.split(';')[0].split("=")[1])
-      socket.emit("sendState", lastGame.state)
+      socket.emit("sendState", lastGame.state, lastGame.mirror)
       socket.to(lastGame.key).emit("sendToLog" , "player joined room " + "with id " + socket.request.headers.cookie.split(';')[0].split("=")[1])
     })
     let clientId = socket.request.headers.cookie.split(';')[0].split("=")[1]
@@ -113,9 +113,10 @@ io.on('connection',(socket) => {
   socket.on("getGames" , () => {
     socket.json.send(JSON.stringify({do : "sendGames" , data : games}))
   })
-  socket.on("sendState" , (state,key) => {
-    socket.to(key).emit("sendState" , state)
+  socket.on("sendState" , (state, key, mirror) => {
+    socket.to(key).emit("sendState" , state, mirror)
     findGame(key).game.state = state
+    findGame(key).game.mirror = mirror
   })
   socket.on("victory" , (team , key) => {
     socket.to(key).emit("win" , team)

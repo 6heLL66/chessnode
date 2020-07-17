@@ -264,7 +264,7 @@ function draw(){
 		let images = document.getElementsByTagName('img');
 		for(let k = 0;k<images.length;k++){
 			if(images[k].src.substr(images[k].src.length - 6,6) == state[i].img){
-				ctx.drawImage(images[k],(state[i].pos.x-1)*size,(state[i].pos.y-1)*size,size,size);
+				ctx.drawImage(images[k],(state[i].pos.x-1)*size + state[i].visPos.x,(state[i].pos.y-1)*size + state[i].visPos.y,size,size);
 				break;
 			}
 		}
@@ -464,7 +464,7 @@ socket.on("clearCookie" , () => {
 	fetch("/clearCookie")
 })
 let c = 0;
-socket.on("sendState" , (newState) => {
+socket.on("sendState" , (newState, mirror) => {
 	c++;
 	for(let i = 0;i < newState.length;i++){
 		if(newState[i].name == "pawn" && newState[i].team == "black")newState[i].func = rules.bP;
@@ -476,8 +476,12 @@ socket.on("sendState" , (newState) => {
 		else if(newState[i].name == "queen" )newState[i].func = rules.queen;
 	}
 	state = newState;
-	if(team == "white")mirroring(state , true);
-	else if(team == "black" && c > 1) mirroring(state , false)
+	if(team == "white" && mirror == "black"){
+		mirroring(state , true);
+	}
+	else if(team == "black" && mirror == "white"){
+		mirroring(state , false)
+	} 
 	if(c > 1)document.getElementById("sound").play()
 	draw();
 })
@@ -513,7 +517,7 @@ socket.on("sendToLog" , (msg) => {
 })
 function sendState(){
 	document.getElementById("sound").play()
-	socket.emit("sendState" , state , window.location.href.split("=")[1]);
+	socket.emit("sendState" , state , window.location.href.split("=")[1], team)
 }
 function checkShah(team){
 	let kings = findFName("king");
