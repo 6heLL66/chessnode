@@ -89,6 +89,17 @@ function mouseDown(e) {
 	canvas.onmouseup = (e) => {
 		figure.visPos.x = 0
 		figure.visPos.y = 0
+		if(e.clientX < canvas.width + canvas.getBoundingClientRect().left
+			&& e.clientX > canvas.getBoundingClientRect().left
+			&& e.clientY < canvas.height + canvas.getBoundingClientRect().top - 2
+			&& e.clientY > canvas.getBoundingClientRect().top) {
+		}
+		else {
+			draw()
+			choosed = false
+			current = -1
+			return 0
+		}
 		if (onClick(e)){
 			draw()
 		} 
