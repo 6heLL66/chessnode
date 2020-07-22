@@ -65,6 +65,7 @@ function onClick(e) {
 }
 
 function mouseDown(e) {
+	canvas.style.cursor = "grabbing"
 	let x = e.clientX - canvas.getBoundingClientRect().left
 	let y = e.clientY - canvas.getBoundingClientRect().top
 	let y1 = Math.floor(y / canvas.width * 10 * 0.8) + 1 
@@ -87,6 +88,7 @@ function mouseDown(e) {
 		y = e.clientY - canvas.getBoundingClientRect().top
 	}
 	canvas.onmouseup = (e) => {
+		canvas.style.cursor = "default"
 		figure.visPos.x = 0
 		figure.visPos.y = 0
 		if(e.clientX < canvas.width + canvas.getBoundingClientRect().left
