@@ -199,6 +199,12 @@ var state = [];
 
 function load(){
 	var img = document.createElement('img');
+	img.setAttribute('src', 'public/images/black.png');
+	document.body.appendChild(img);
+	var img = document.createElement('img');
+	img.setAttribute('src', 'public/images/white.jpg');
+	document.body.appendChild(img);
+	var img = document.createElement('img');
 	img.setAttribute('src', 'public/images/wR.png');
 	document.body.appendChild(img);
 	var img = document.createElement('img');
@@ -256,9 +262,8 @@ function draw(){
 	for(let i = 0;i < 64;i++){
 		let x = posToCords(i).x;
 		let y = posToCords(i).y;
-		if((y % 2 == 0 && x % 2 == 0) || (y % 2 != 0 && x % 2 != 0))ctx.fillStyle = "#ffff95";
-		else ctx.fillStyle = "#227022";
-		ctx.fillRect((x-1)*size,(y-1)*size,size,size);
+		if((y % 2 == 0 && x % 2 == 0) || (y % 2 != 0 && x % 2 != 0))ctx.drawImage(findImg("white.jpg"), (x-1)*size, (y-1)*size, size, size);
+		else ctx.drawImage(findImg("black.png"), (x-1)*size, (y-1)*size, size, size);
 	}
 	for(let i = 0;i < state.length;i++){
 		let images = document.getElementsByTagName('img');
@@ -426,7 +431,7 @@ function choose(obj,y){
 function findImg(src){
 	let images = document.getElementsByTagName('img');
 	for(let i = 0;i < images.length;i++){
-		if(images[i].src.substr(images[i].src.length - 6,6) ==  src)return images[i];
+		if(images[i].src.split('/')[5] ==  src)return images[i];
 	}
 	return false;
 }
