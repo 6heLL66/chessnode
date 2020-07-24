@@ -1,7 +1,7 @@
 var canvas  = document.getElementById('canvas');
 var ctx = canvas.getContext("2d");
 if (window.innerWidth > 981) {
-	canvas.width = window.innerWidth * 0.5;
+	canvas.width = window.innerWidth * 0.42;
 	canvas.style.marginRight = window.innerWidth * 0.2 + "px";
 }
 else {
