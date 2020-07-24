@@ -28,20 +28,23 @@ body{
 	flex-direction: row;
 	justify-content: center;
 	height : 6%;
+	max-height: 50px;
 	border-bottom: 2px solid rgba(0,0,0,0.5);
 }
 .btn{
 	width: 40%;
 	height: 80%;
-	text-align: center;
 	border-radius : 3px;
 	box-shadow : 0 0 15px rgba(64,200,64,0.7);
-	line-height: 40px;
 	background: rgba(64,200,64,1);
 	font-size : 18px;
 	font-family : "Arial";
 	color: #ffffff;
 	cursor: pointer;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: center;
 }
 .games_bar{
 	width: 100%;
@@ -150,7 +153,7 @@ body{
 	font-weight: 600;
 	color : #3cce7b;
 }
-@media screen and (max-width: 900px){
+@media screen and (max-width: 1150px){
 	.main {
 		width : 80%;
 	}

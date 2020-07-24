@@ -1,17 +1,17 @@
 var canvas  = document.getElementById('canvas');
 var ctx = canvas.getContext("2d");
-if (window.innerWidth > 900) {
-	canvas.width = window.innerWidth * 0.4;
+if (window.innerWidth > 981) {
+	canvas.width = window.innerWidth * 0.5;
 	canvas.style.marginRight = window.innerWidth * 0.2 + "px";
 }
 else {
-	canvas.width = window.innerWidth * 0.8;
-	canvas.style.marginRight = window.innerWidth * 0.1 + "px";
+	canvas.width = window.innerWidth * 0.9;
+	canvas.style.marginRight = window.innerWidth * 0.05 + "px";
 }
 canvas.height = canvas.width;
 canvas.style.marginTop ="100px";
 
-document.getElementById('state').style.right = window.innerWidth/1.8 + "px";
+document.getElementById('state').style.right = window.innerWidth/2 - document.getElementById('state').innerWidth + "px";
 var size = canvas.width / 8;
 var current = -1;
 var team = "";
