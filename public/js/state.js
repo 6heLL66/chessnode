@@ -115,13 +115,25 @@ var rules = {
 					return true;
 				}
 				else if (this.steps == 0 && bool == false){
-					if(x == this.pos.x - 2 && findF(1,this.pos.y).figure.name == "rook" && !findF(3,this.pos.y)){
-						findF(1,this.pos.y).figure.pos.x = 3;
-						return true;
+					if (this.team == "black") {
+						if(x == this.pos.x - 2 && findF(1,this.pos.y).figure.name == "rook" && !findF(3,this.pos.y)){
+							findF(1,this.pos.y).figure.pos.x = 3;
+							return true;
+						}
+						else if (x == this.pos.x + 2 && findF(8,this.pos.y).figure.name == "rook" && !findF(7,this.pos.y) && !findF(5,this.pos.y)){
+							state[findF(8,this.pos.y).index].pos.x = 5;
+							return true;
+						}
 					}
-					else if (x == this.pos.x + 2 && findF(8,this.pos.y).figure.name == "rook" && !findF(7,this.pos.y) && !findF(5,this.pos.y)){
-						state[findF(8,this.pos.y).index].pos.x = 5;
-						return true;
+					else {
+						if(x == this.pos.x + 2 && findF(8,this.pos.y).figure.name == "rook" && !findF(6,this.pos.y)){
+							findF(8,this.pos.y).figure.pos.x = 6;
+							return true;
+						}
+						else if (x == this.pos.x - 2 && findF(1,this.pos.y).figure.name == "rook" && !findF(4,this.pos.y) && !findF(2,this.pos.y)){
+							state[findF(1,this.pos.y).index].pos.x = 4;
+							return true;
+						}
 					}
 					return false;
 				} 
