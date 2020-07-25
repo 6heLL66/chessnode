@@ -407,7 +407,7 @@ function choose(obj,y){
 
 
     }
-    else if (obj.team == "white" && y == 8){
+    else if (obj.team == "white" && y == 1){
 		let queenImg = findImg("wQ.png");
     	let knightImg = findImg("wN.png");
     	queenImg.style.display = "block";
