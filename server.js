@@ -42,9 +42,6 @@ app.get("/clearCookie" , (req,res) =>{
 })
 
 
-
-
-
 server.listen(PORT, (err) => {
     if (err) {
         return console.log('something bad happened', err)
@@ -58,10 +55,11 @@ io.on('connection',(socket) => {
   socket.on("disconnect", function(){
     console.log("disconnect")
   })
-  socket.on("disconnectFromGame" , (key) => {
+  socket.on("disconnectFromGame" , (key, team) => {
     games.splice(findGame(key).i,1);
     socket.to(key).emit("sendToLog" , "player was disconnected ")
-    socket.to(key).emit("clearCookie" )
+    socket.to(key).emit("clearCookie")
+    socket.to(key).emit("win", team)
   })
   socket.on("connectToRoom", () => {
     socket.join(lastGame.key , () => {

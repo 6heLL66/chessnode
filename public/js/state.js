@@ -473,7 +473,7 @@ function mirroring (state,bull){
 }
 document.getElementById("abadon").onclick = function(){
 	if(team == "spectator")return 0;
-	socket.emit("disconnectFromGame" , window.location.href.split("=")[1])
+	socket.emit("disconnectFromGame" , window.location.href.split("=")[1], team)
 	fetch("/clearCookie").then((res) => window.location.href = "/")
 }
 //socket
