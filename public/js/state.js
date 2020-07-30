@@ -494,11 +494,14 @@ socket.on("sendState" , (newState, mirror) => {
 	}
 	state = newState;
 	if(team == "white" && mirror == "black"){
-		mirroring(state , true);
+		mirroring(state , true)
 	}
 	else if(team == "black" && mirror == "white"){
 		mirroring(state , false)
-	} 
+	}
+	else if (team === "spectator" && mirror == "black") {
+		mirroring(state , true)
+	}
 	if(c > 1)document.getElementById("sound").play()
 	draw();
 })
