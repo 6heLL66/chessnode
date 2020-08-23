@@ -1,5 +1,4 @@
-
-var buffer = [];
+var buffer = []
 var rules = {
 	"bP" : function(x,y){
 			if(findF(x,y) && ((this.pos.x + 1 == x && this.pos.y - 1 == y) || (this.pos.x - 1 == x && this.pos.y - 1 == y))){
@@ -296,9 +295,11 @@ function stepK(x1,y1){
 		current = -1;
 	}
 	else {
-		console.log("stepK")
 		buffer = [];
-		if(current.name == "pawn" && (y1 == 8 || y1 == 1))choose(current,y1);
+		if(current.name == "pawn" && (y1 == 8 || y1 == 1)){
+			choose(current,y1);
+			return 0
+		}
 		if(current.name == "pawn" || current.name == "king")current.steps++;
 		current.pos.x = x1;
 		current.pos.y = y1;	
@@ -318,7 +319,10 @@ function step(x1,y1){
 	}
 	else {
 		change(current,buffer.pop());
-		if(current.name == "pawn" && (y1 == 8 || y1 == 1))choose(current,y1);
+		if(current.name == "pawn" && (y1 == 8 || y1 == 1)){
+			choose(current,y1);
+			return 0
+		}
 		if(current.name == "pawn" || current.name == "king")current.steps++;
 		current.pos.x = x1;
 		current.pos.y = y1;
@@ -327,7 +331,6 @@ function step(x1,y1){
 		else checkMat("black");
 		current = -1;
 		sendState();
-		console.log("step")
 		socket.emit("setTurn" , window.location.href.split("=")[1])
 	}
 }
@@ -388,6 +391,7 @@ function choose(obj,y){
 				modal.remove();
 				load();
 				sendState();
+				socket.emit("setTurn" , window.location.href.split("=")[1])
 				draw();
     		}
     		knight.onclick = function (){
@@ -397,6 +401,7 @@ function choose(obj,y){
 				modal.remove();
 				load();
 				sendState();
+				socket.emit("setTurn" , window.location.href.split("=")[1])
 				draw();
     		}
     	queen.append(queenImg);
@@ -404,8 +409,6 @@ function choose(obj,y){
     	modal.append(queen);
     	modal.append(knight);
     	document.body.append(modal);
-
-
     }
     else if (obj.team == "white" && y == 1){
 		let queenImg = findImg("wQ.png");
@@ -419,6 +422,8 @@ function choose(obj,y){
 	    		obj.img = "wQ.png";
 	    		obj.func = rules.queen;
 				modal.remove();
+				sendState();
+				socket.emit("setTurn" , window.location.href.split("=")[1])
 				load();
 				draw();
 				
@@ -428,6 +433,8 @@ function choose(obj,y){
 	    		obj.img = "wN.png";
 	    		obj.func = rules.knight;
 				modal.remove();
+				sendState();
+				socket.emit("setTurn" , window.location.href.split("=")[1])
 				load();
 				draw();
 				
@@ -507,10 +514,6 @@ socket.on("sendState" , (newState, mirror) => {
 })
 socket.on("setTeam" , (t) => {
 	team = t;
-	if(t == "black"){
-		//mirroring(state , false);
-		//console.log(t)
-	}
 	let span = document.createElement('span');
 	span.innerText = "you connected like player " + t;
 	document.getElementById("log").append(span);
@@ -518,7 +521,7 @@ socket.on("setTeam" , (t) => {
 socket.on("startGame" , () => {
 	startGame = true;
 	let span = document.createElement('span');
-	span.innerText = "game started!" ;
+	span.innerText = "game started!";
 	document.getElementById("log").append(span);
 	document.getElementById('state').innerText = "TURN " + turn.toUpperCase() 
 })
@@ -526,7 +529,6 @@ socket.on("win" , (team) => {
 	win(team)
 })
 socket.on("changeTurn" , () => {
-	console.log("смена хода")
 	turn == "white" ? turn = "black" : turn = "white";
 	document.getElementById('state').innerText = "TURN " + turn.toUpperCase()  
 })
