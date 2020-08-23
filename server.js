@@ -111,6 +111,10 @@ io.on('connection', (socket) => {
     findGame(key).game.state = state
     findGame(key).game.mirror = mirror
   })
+  socket.on('sendMsg', (msg, id, key) => {
+    socket.to(key).emit('sendToLog', `${id}: ${msg}`)
+    socket.emit('sendToLog', `${id}: ${msg}`)
+  })
   socket.on("victory", (team , key) => {
     socket.to(key).emit("win", team)
     socket.emit("clearCookie")

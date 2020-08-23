@@ -153,6 +153,32 @@ body{
 	font-weight: 600;
 	color : #3cce7b;
 }
+.log input {
+	font-size: 16px;
+	align-self: flex-start;
+	width: 80%;
+	height: 25px;
+	padding: 5px;
+	position: absolute;
+	bottom: 0;
+	outline: none;
+}
+.log div {
+	width: 10%;
+	font-size: 28px;
+	text-align: start;
+	height: 39px;
+	line-height: 39px;
+	position: absolute;
+	bottom: 2px;
+	right: 6px;
+	background-image: url('');
+	align-self: flex-end;
+}
+.log div i:hover {
+	color: #578bd2;
+	cursor: pointer;
+}
 @media screen and (max-width: 1150px){
 	.main {
 		width : 80%;

@@ -260,6 +260,18 @@ function load(){
 	}
 }
 
+document.getElementById('send').onclick = function() {
+	let msg = document.getElementById('msg').value
+	if (msg.length > 20 || msg.length <= 0) return 0
+	socket.emit('sendMsg', msg, `player ${team}`, window.location.href.split("=")[1])
+}
+document.onkeydown = function(e) {
+	if (e.key == 'Enter') {
+		document.getElementById('send').onclick()
+		document.getElementById('msg').value = ""
+	}
+}
+
 function posToCords(pos){
 	pos++;
 	let y = Math.floor(pos / 8 - 0.01) + 1;
