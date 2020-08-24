@@ -62,6 +62,7 @@ io.on('connection', (socket) => {
       console.log("socket joined room " + lastGame.key + " with id " + socket.request.headers.cookie.split(';')[0].split("=")[1])
       socket.emit("sendState", lastGame.state, lastGame.mirror)
     })
+    socket.emit('addDeads', lastGame.dead)
     let clientId = socket.request.headers.cookie.split(';')[0].split("=")[1]
     if (lastGame.players.white == "first") {
       socket.emit("setTeam", "white")
@@ -118,6 +119,11 @@ io.on('connection', (socket) => {
   socket.on("victory", (team , key) => {
     socket.to(key).emit("win", team)
     socket.emit("clearCookie")
+  })
+  socket.on('sendDead', (team, src, key) => {
+    findGame(key).game.dead[team].push(src)
+    socket.emit('addDead', team, src)
+    socket.to(key).emit('addDead', team, src)
   })
   socket.on("setTurn", (key) => {
     let game = findGame(key).game

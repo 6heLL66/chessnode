@@ -37,7 +37,11 @@ document.getElementById("send").onclick = function (){
 		key : createKey(15),
 		state : [],
 		mirror : "black",
-		turn : "white"
+		turn : "white",
+		dead: {
+			white: [],
+			black: []
+		}
 	};
 	if(data.team == "white")data.players.white = "first"
     else data.players.black = "first";

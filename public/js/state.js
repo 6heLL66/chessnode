@@ -296,7 +296,8 @@ function draw(){
 				break;
 			}
 		}
-	}	
+	}
+	if (current != -1) ctx.drawImage(findImg(current.img),(current.pos.x-1)*size + current.visPos.x,(current.pos.y-1)*size + current.visPos.y,size,size);
 }
 function stepK(x1,y1){
 	change(current,{x : x1, y : y1},{x : x1, y : y1});
@@ -307,6 +308,7 @@ function stepK(x1,y1){
 		current = -1;
 	}
 	else {
+		socket.emit('sendDead', buffer[1].figure.team, buffer[1].figure.img, window.location.href.split("=")[1])
 		buffer = [];
 		if(current.name == "pawn" && (y1 == 8 || y1 == 1)){
 			choose(current,y1);
@@ -524,6 +526,12 @@ socket.on("sendState" , (newState, mirror) => {
 	if(c > 1)document.getElementById("sound").play()
 	draw();
 })
+socket.on('addDeads', (deads) => {
+	for (let i = 0; i < (deads.white.length > deads.black.length ? deads.white.length : deads.black.length); i++) {
+		if (deads.white[i] !== undefined) document.getElementById('dw').append(findImg(deads.white[i]))
+		if (deads.black[i] !== undefined) document.getElementById('db').append(findImg(deads.black[i]))
+	}
+})
 socket.on("setTeam" , (t) => {
 	team = t;
 	let span = document.createElement('span');
@@ -539,6 +547,10 @@ socket.on("startGame" , () => {
 })
 socket.on("win" , (team) => {
 	win(team)
+})
+socket.on('addDead', (team, src) => {
+	let img = findImg(src)
+	document.getElementById(team == 'black' ? 'db' : 'dw').append(img)
 })
 socket.on("changeTurn" , () => {
 	turn == "white" ? turn = "black" : turn = "white";
@@ -692,5 +704,7 @@ function win(team){
 	modal.append(cross);
 	document.body.append(modal);
 }
+
+
 
  

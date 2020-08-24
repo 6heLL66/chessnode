@@ -9,9 +9,10 @@ else {
 	canvas.style.marginRight = window.innerWidth * 0.05 + "px";
 }
 canvas.height = canvas.width;
-canvas.style.marginTop ="100px";
 
 document.getElementById('state').style.right = window.innerWidth/2 - document.getElementById('state').innerWidth + "px";
+document.getElementById('dw').style.marginRight = window.innerWidth * 0.2 + canvas.getBoundingClientRect().width - document.getElementById('dw').getBoundingClientRect().width + "px"
+document.getElementById('db').style.marginRight = document.getElementById('dw').style.marginRight
 var size = canvas.width / 8;
 var current = -1;
 var team = "";
