@@ -535,13 +535,13 @@ socket.on('addDeads', (deads) => {
 	for (let i = 0; i < (deads.white.length > deads.black.length ? deads.white.length : deads.black.length); i++) {
 		let img = document.createElement('img')
 		img.src = 'public/images/' + deads.white[i] 
-		if (deads.white[i] !== undefined && team == "white") document.getElementById('db').append(img)
-		if (deads.white[i] !== undefined && team == "black") document.getElementById('dw').append(img)
+		if (deads.white[i] !== undefined && team == "black") document.getElementById('db').append(img)
+		if (deads.white[i] !== undefined && team == "white") document.getElementById('dw').append(img)
 
 		img = document.createElement('img')
 		img.src = 'public/images/' + deads.black[i] 
-		if (deads.black[i] !== undefined && team == "white") document.getElementById('dw').append(img)
-		if (deads.black[i] !== undefined && team == "black") document.getElementById('db').append(img)
+		if (deads.black[i] !== undefined && team == "black") document.getElementById('dw').append(img)
+		if (deads.black[i] !== undefined && team == "white") document.getElementById('db').append(img)
 	}
 	document.getElementById('dw').style.marginRight = window.innerWidth * 0.2 + canvas.getBoundingClientRect().width - document.getElementById('dw').getBoundingClientRect().width + "px"
 	document.getElementById('db').style.marginRight = window.innerWidth * 0.2 + canvas.getBoundingClientRect().width - document.getElementById('db').getBoundingClientRect().width + "px"
@@ -549,12 +549,12 @@ socket.on('addDeads', (deads) => {
 socket.on("setTeam" , (t) => {
 	team = t;
 	if (team == 'white') {
-		document.getElementById('dw').style.backgroundColor = team
-		document.getElementById('db').style.backgroundColor = team
-	}
-	else {
 		document.getElementById('dw').style.backgroundColor = 'black'
 		document.getElementById('db').style.backgroundColor = 'white'
+	}
+	else {
+		document.getElementById('dw').style.backgroundColor = 'white'
+		document.getElementById('db').style.backgroundColor = 'black'
 	}
 	let span = document.createElement('span');
 	span.innerText = "you connected like player " + t;
@@ -573,8 +573,8 @@ socket.on("win" , (team) => {
 socket.on('addDead', (t, src) => {
 	let img = document.createElement('img')
 	img.src = 'public/images/' + src
-	if (team == 'black') document.getElementById(t == 'black' ? 'db' : 'dw').append(img)
-	else if (team == 'white') document.getElementById(t == 'white' ? 'db' : 'dw').append(img)
+	if (team == 'white') document.getElementById(t == 'black' ? 'db' : 'dw').append(img)
+	else if (team == 'black') document.getElementById(t == 'white' ? 'db' : 'dw').append(img)
 	document.getElementById('dw').style.marginRight = window.innerWidth * 0.2 + canvas.getBoundingClientRect().width - document.getElementById('dw').getBoundingClientRect().width + "px"
 	document.getElementById('db').style.marginRight = window.innerWidth * 0.2 + canvas.getBoundingClientRect().width - document.getElementById('db').getBoundingClientRect().width + "px"
 })
