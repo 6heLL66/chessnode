@@ -308,21 +308,21 @@ function stepK(x1,y1){
 		current = -1;
 	}
 	else {
-		socket.emit('sendDead', buffer[1].figure.team, buffer[1].figure.img, window.location.href.split("=")[1])
-		buffer = [];
 		if(current.name == "pawn" && (y1 == 8 || y1 == 1)){
-			choose(current,y1);
+			choose(current, buffer[1].figure);
 			return 0
 		}
+		socket.emit('sendDead', buffer[1].figure.team, buffer[1].figure.img, window.location.href.split("=")[1])
+		buffer = [];
 		if(current.name == "pawn" || current.name == "king")current.steps++;
 		current.pos.x = x1;
 		current.pos.y = y1;	
-		draw();
 		if(current.team == "black")checkMat("white");
 		else checkMat("black");
 		current = -1;
 		sendState();
 		socket.emit("setTurn" , window.location.href.split("=")[1])
+		draw();
 	}		
 }
 function step(x1,y1){
@@ -334,18 +334,18 @@ function step(x1,y1){
 	else {
 		change(current,buffer.pop());
 		if(current.name == "pawn" && (y1 == 8 || y1 == 1)){
-			choose(current,y1);
+			choose(current);
 			return 0
 		}
 		if(current.name == "pawn" || current.name == "king")current.steps++;
 		current.pos.x = x1;
 		current.pos.y = y1;
-		draw();
 		if(current.team == "black")checkMat("white");
 		else checkMat("black");
 		current = -1;
 		sendState();
 		socket.emit("setTurn" , window.location.href.split("=")[1])
+		draw();
 	}
 }
 function findF(x,y){
@@ -375,7 +375,7 @@ function add(state,ind,fig){
 	}
 	return arr;
 }
-function choose(obj,y){
+function choose(obj, dead){
 	let modal = document.createElement('div');
 	let style = `
 		position: fixed;
@@ -390,7 +390,7 @@ function choose(obj,y){
 	    background-color : rgba(0,0,0,0.9);
     `;
     modal.style.cssText = style;
-    if(obj.team == 'black' && y == 1){
+    if(obj.team == 'black'){
     	let queenImg = findImg("bQ.png");
     	queenImg.style.display = "block";
     	let knightImg = findImg("bN.png");
@@ -406,6 +406,7 @@ function choose(obj,y){
 				load();
 				sendState();
 				socket.emit("setTurn" , window.location.href.split("=")[1])
+				socket.emit('sendDead', dead.team, dead.img, window.location.href.split("=")[1])
 				draw();
     		}
     		knight.onclick = function (){
@@ -416,6 +417,7 @@ function choose(obj,y){
 				load();
 				sendState();
 				socket.emit("setTurn" , window.location.href.split("=")[1])
+				socket.emit('sendDead', dead.team, dead.img, window.location.href.split("=")[1])
 				draw();
     		}
     	queen.append(queenImg);
@@ -424,7 +426,7 @@ function choose(obj,y){
     	modal.append(knight);
     	document.body.append(modal);
     }
-    else if (obj.team == "white" && y == 1){
+    else if (obj.team == "white"){
 		let queenImg = findImg("wQ.png");
     	let knightImg = findImg("wN.png");
     	queenImg.style.display = "block";
@@ -438,6 +440,7 @@ function choose(obj,y){
 				modal.remove();
 				sendState();
 				socket.emit("setTurn" , window.location.href.split("=")[1])
+				socket.emit('sendDead', dead.team, dead.img, window.location.href.split("=")[1])
 				load();
 				draw();
 				
@@ -449,6 +452,7 @@ function choose(obj,y){
 				modal.remove();
 				sendState();
 				socket.emit("setTurn" , window.location.href.split("=")[1])
+				socket.emit('sendDead', dead.team, dead.img, window.location.href.split("=")[1])
 				load();
 				draw();
 				
@@ -504,6 +508,7 @@ socket.on("clearCookie" , () => {
 let c = 0;
 socket.on("sendState" , (newState, mirror) => {
 	c++;
+	current = -1
 	for(let i = 0;i < newState.length;i++){
 		if(newState[i].name == "pawn" && newState[i].team == "black")newState[i].func = rules.bP;
 		else if(newState[i].name == "pawn" && newState[i].team == "white")newState[i].func = rules.wP;
@@ -528,12 +533,29 @@ socket.on("sendState" , (newState, mirror) => {
 })
 socket.on('addDeads', (deads) => {
 	for (let i = 0; i < (deads.white.length > deads.black.length ? deads.white.length : deads.black.length); i++) {
-		if (deads.white[i] !== undefined) document.getElementById('dw').append(findImg(deads.white[i]))
-		if (deads.black[i] !== undefined) document.getElementById('db').append(findImg(deads.black[i]))
+		let img = document.createElement('img')
+		img.src = 'public/images/' + deads.white[i] 
+		if (deads.white[i] !== undefined && team == "white") document.getElementById('db').append(img)
+		if (deads.white[i] !== undefined && team == "black") document.getElementById('dw').append(img)
+
+		img = document.createElement('img')
+		img.src = 'public/images/' + deads.black[i] 
+		if (deads.black[i] !== undefined && team == "white") document.getElementById('dw').append(img)
+		if (deads.black[i] !== undefined && team == "black") document.getElementById('db').append(img)
 	}
+	document.getElementById('dw').style.marginRight = window.innerWidth * 0.2 + canvas.getBoundingClientRect().width - document.getElementById('dw').getBoundingClientRect().width + "px"
+	document.getElementById('db').style.marginRight = window.innerWidth * 0.2 + canvas.getBoundingClientRect().width - document.getElementById('db').getBoundingClientRect().width + "px"
 })
 socket.on("setTeam" , (t) => {
 	team = t;
+	if (team == 'white') {
+		document.getElementById('dw').style.backgroundColor = team
+		document.getElementById('db').style.backgroundColor = team
+	}
+	else {
+		document.getElementById('dw').style.backgroundColor = 'black'
+		document.getElementById('db').style.backgroundColor = 'white'
+	}
 	let span = document.createElement('span');
 	span.innerText = "you connected like player " + t;
 	document.getElementById("log").append(span);
@@ -548,9 +570,13 @@ socket.on("startGame" , () => {
 socket.on("win" , (team) => {
 	win(team)
 })
-socket.on('addDead', (team, src) => {
-	let img = findImg(src)
-	document.getElementById(team == 'black' ? 'db' : 'dw').append(img)
+socket.on('addDead', (t, src) => {
+	let img = document.createElement('img')
+	img.src = 'public/images/' + src
+	if (team == 'black') document.getElementById(t == 'black' ? 'db' : 'dw').append(img)
+	else if (team == 'white') document.getElementById(t == 'white' ? 'db' : 'dw').append(img)
+	document.getElementById('dw').style.marginRight = window.innerWidth * 0.2 + canvas.getBoundingClientRect().width - document.getElementById('dw').getBoundingClientRect().width + "px"
+	document.getElementById('db').style.marginRight = window.innerWidth * 0.2 + canvas.getBoundingClientRect().width - document.getElementById('db').getBoundingClientRect().width + "px"
 })
 socket.on("changeTurn" , () => {
 	turn == "white" ? turn = "black" : turn = "white";

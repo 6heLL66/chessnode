@@ -192,21 +192,20 @@ body{
 	}
 }
 .dead {
-	height: 25px;
-	width: 400px;
+	height: 30px;
 	display: flex;
 	flex-direction: row;
 	align-items: center;
 }
 .dead img {
-	width: 25px;
-	height: 25px;
-	margin-left: 6px;
+	width: 30px;
+	height: 30px;
 	display: block!important;
 }
-.dead img:first-child {
-	margin: 0;
-}
 .w {
-	margin-top: 100px;
+	margin-top: 75px;
+	background-color: black
+}
+.b {
+	background-color: white
 }

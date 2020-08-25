@@ -62,7 +62,6 @@ io.on('connection', (socket) => {
       console.log("socket joined room " + lastGame.key + " with id " + socket.request.headers.cookie.split(';')[0].split("=")[1])
       socket.emit("sendState", lastGame.state, lastGame.mirror)
     })
-    socket.emit('addDeads', lastGame.dead)
     let clientId = socket.request.headers.cookie.split(';')[0].split("=")[1]
     if (lastGame.players.white == "first") {
       socket.emit("setTeam", "white")
@@ -97,6 +96,7 @@ io.on('connection', (socket) => {
       socket.to(lastGame.key).emit("startGame")
       socket.emit("startGame")
     }
+    socket.emit('addDeads', lastGame.dead, lastGame.mirror)
   })
   socket.on("makeGame", (game) => {
     let state = []
