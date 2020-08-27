@@ -332,11 +332,11 @@ function step(x1,y1){
 		current = -1;
 	}
 	else {
-		change(current,buffer.pop());
 		if(current.name == "pawn" && (y1 == 8 || y1 == 1)){
 			choose(current);
 			return 0
 		}
+		change(current,buffer.pop());
 		if(current.name == "pawn" || current.name == "king")current.steps++;
 		current.pos.x = x1;
 		current.pos.y = y1;
