@@ -192,7 +192,7 @@ var rules = {
 			return false;
 		}
 	}
-function fillState(state){
+export default function fillState(state){
 	for(let i = 0;i < 32;i++){
 		if(i < 16){
 			if(i < 8){
@@ -337,7 +337,7 @@ function fillState(state){
 	}
 	return state;
 }
-module.exports = {
+/*module.exports = {
 	fillState : fillState,
 	rules : rules
-}
+}*/

@@ -4,6 +4,9 @@ document.getElementById("cross").onclick = function () {
 document.getElementById("btn").onclick = function () {
 	document.getElementById('modal').style.display = 'flex';
 }
+document.getElementById('ai').onclick = function() {
+	window.location.href = '/versusAi'
+}
 
 document.getElementById("white").onclick = function(e){
 	if(e.target.choosed == "yes")return 0;

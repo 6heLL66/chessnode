@@ -23,6 +23,10 @@ app.get('/', (request, response) => {
     }   
 })
 
+app.get('/versusAi', (req, res) => {
+  res.sendFile('versusAi.html', {root: __dirname})
+})
+
 app.get('/game', (request, response) => {
     response.sendFile('game.html', { root: __dirname })
     lastGame = findGame(request.query.key).game
