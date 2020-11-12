@@ -1,1 +1,1 @@
-Open: chessnode.herokuapp.com
+Open: <a href="chessnode.herokuapp.com"></a>
